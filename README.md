@@ -1,43 +1,62 @@
 # Building an LLM from Scratch 🚀
 
-A step-by-step, hands-on implementation of the core building blocks of a Large Language Model (LLM) from the ground up using PyTorch. This repository contains Jupyter notebooks demonstrating the data prep pipelines, custom tokenization strategies, sliding window data loaders, and various self-attention mechanisms.
+A step-by-step, hands-on implementation of the core building blocks of a Large Language Model (LLM) from the ground up using PyTorch. This repository is organized into distinct **`code/`** and **`explanation/`** folders for clean navigation.
 
 ---
 
-## 📂 Repository Structure & Markdown Documentation
+## 📂 Repository Structure
 
-- 📓 **[Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/Data_Input_Pipeline.ipynb)** | 📘 **[Data_Input_Pipeline.md Documentation Guide](file:///d:/projects/LLM/Data_Input_Pipeline.md)**: Implements text ingestion, cleaning, tokenization, vocabulary mapping, Byte Pair Encoding (BPE), sliding window data sampling, and embedding generation.
-- 📓 **[Attention_Mechanism.ipynb](file:///d:/projects/LLM/Attention_Mechanism.ipynb)** | 📘 **[Attention_Mechanism.md Documentation Guide](file:///d:/projects/LLM/Attention_Mechanism.md)**: Implements step-by-step self-attention mechanisms, starting from dot-product similarity to trainable Query-Key-Value (QKV) projections and PyTorch modules.
-- 📓 **Executed_Data_Input_Pipeline.ipynb** | 📘 **[Executed_Data_Input_Pipeline.md Verification Guide](file:///d:/projects/LLM/Executed_Data_Input_Pipeline.md)**: Verified execution trace, tensor shape breakdowns, and dataset sampling statistics.
-- 📄 **[verdict.txt](file:///d:/projects/LLM/verdict.txt)**: Raw input text (Edith Wharton's short story *The Verdict*) used to test tokenization and data loaders.
-- 📋 **[requirements.txt](file:///d:/projects/LLM/requirements.txt)**: Required dependencies including PyTorch, tiktoken, NLTK, and Jupyter.
+```text
+LLM/
+├── 💻 code/                         # Implementation Jupyter Notebooks & Data
+│   ├── Attention_Mechanism.ipynb
+│   ├── Data_Input_Pipeline.ipynb
+│   ├── Executed_Data_Input_Pipeline.ipynb
+│   └── verdict.txt
+├── 📘 explanation/                  # Detailed Step-by-Step Documentation Guides
+│   ├── Attention_Mechanism.md
+│   ├── Data_Input_Pipeline.md
+│   └── Executed_Data_Input_Pipeline.md
+├── README.md                        # Project Overview & Setup Instructions
+└── requirements.txt                 # Project Dependencies
+```
 
 ---
 
-## 🛠️ Pipeline Details
+## 🗂️ Notebooks & Detailed Explanations
 
-### 1. Data Input Pipeline (`Data_Input_Pipeline.ipynb`)
-Before feeding text into an LLM, it must be parsed and converted into embeddings. This notebook covers:
-- **Tokenization**: Exploring basic split-by-regex methods, NLTK word tokenizers, and advanced Byte Pair Encoding (BPE) using OpenAI's `tiktoken` (GPT-2 vocabulary).
-- **Special Tokens**: Handling unknown words (`<|unk|>`) and boundary markers (`<|endoftext|>`).
+| Component | 💻 Notebook Code | 📘 Explanation Guide | Description |
+|---|---|---|---|
+| **Data Input Pipeline** | [Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/code/Data_Input_Pipeline.ipynb) | [Data_Input_Pipeline.md](file:///d:/projects/LLM/explanation/Data_Input_Pipeline.md) | Text reading, Regex/NLTK/BPE tokenization, sliding window dataset, and token/positional embeddings. |
+| **Attention Mechanism** | [Attention_Mechanism.ipynb](file:///d:/projects/LLM/code/Attention_Mechanism.ipynb) | [Attention_Mechanism.md](file:///d:/projects/LLM/explanation/Attention_Mechanism.md) | Dot-product self-attention, matrix multiplication, trainable QKV weights, scaling factor, and PyTorch modules. |
+| **Executed Pipeline Trace** | [Executed_Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/code/Executed_Data_Input_Pipeline.ipynb) | [Executed_Data_Input_Pipeline.md](file:///d:/projects/LLM/explanation/Executed_Data_Input_Pipeline.md) | Execution trace, data batch shapes, token counts, and embedding verification. |
+
+---
+
+## 🛠️ Pipeline Overview
+
+### 1. Data Input Pipeline ([code/Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/code/Data_Input_Pipeline.ipynb))
+Before feeding text into an LLM, raw text must be parsed and converted into embeddings.
+- **Tokenization**: Exploring basic split-by-regex methods, NLTK word tokenizers, and Byte Pair Encoding (BPE) using OpenAI's `tiktoken` (GPT-2 vocabulary).
+- **Special Tokens**: Handling unknown words (`<|unk|>`) and document boundary markers (`<|endoftext|>`).
 - **Data Sampling**: Structuring text into inputs ($x$) and targets ($y$) using a custom PyTorch `Dataset` (`GPTDatasetV1`) and a sliding window dataloader.
-- **Embeddings**: Creating trainable token embedding layers (`torch.nn.Embedding`) and positional embedding layers to retain sequence order.
+- **Embeddings**: Creating trainable token embedding layers (`torch.nn.Embedding`) and positional embedding layers.
 
 ```mermaid
 graph TD
-    RawText[Raw Text: verdict.txt] --> Tokenizer[Tokenization: NLTK / BPE]
+    RawText[Raw Text: code/verdict.txt] --> Tokenizer[Tokenization: NLTK / BPE]
     Tokenizer --> TokenIDs[Token IDs]
     TokenIDs --> SlidingWindow[Sliding Window Dataset]
     SlidingWindow --> DataLoader[PyTorch DataLoader]
     DataLoader --> Embeddings[Token & Positional Embeddings]
 ```
 
-### 2. Attention Mechanisms (`Attention_Mechanism.ipynb`)
-Attention allows models to dynamically focus on different parts of a sequence. This notebook implements:
-- **Simple Self-Attention**: Calculating attention weights using dot-product similarity between raw inputs, normalized using a custom `softmax` function.
-- **Matrix Operations**: Vectorizing the attention mechanism for batch compute using PyTorch matrix multiplication (tensor operations).
-- **Trainable QKV Weights**: Transitioning to trainable weight matrices for Query ($W_q$), Key ($W_k$), and Value ($W_v$) projections, scaled dot-product attention, and context vector generation.
-- **Custom PyTorch Module (`SelfAttention_v1`)**: Encapsulating the self-attention mechanism into a clean `torch.nn.Module` subclass.
+### 2. Attention Mechanisms ([code/Attention_Mechanism.ipynb](file:///d:/projects/LLM/code/Attention_Mechanism.ipynb))
+Attention allows models to dynamically focus on relevant tokens across sequences.
+- **Simple Self-Attention**: Calculating attention weights using dot-product similarity between raw inputs.
+- **Matrix Operations**: Vectorizing the attention mechanism using PyTorch tensor multiplication.
+- **Trainable QKV Weights**: Transitioning to trainable Query ($W_q$), Key ($W_k$), and Value ($W_v$) weight projections.
+- **PyTorch Modules**: Modular encapsulation into `SelfAttention_v1` (`nn.Parameter`) and `SelfAttention_v2` (`nn.Linear`).
 
 ---
 
@@ -68,22 +87,7 @@ Attention allows models to dynamically focus on different parts of a sequence. T
    pip install -r requirements.txt
    ```
 
-4. Launch Jupyter Lab to run the notebooks:
+4. Launch Jupyter Lab to run notebooks from the `code/` folder:
    ```bash
    jupyter lab
    ```
-
----
-
-## 🧪 Quick Run Guide
-
-Within `Data_Input_Pipeline.ipynb`, you can quickly load the sample text and verify the sliding window setup:
-```python
-import tiktoken
-from torch.utils.data import DataLoader
-from GPTDatasetV1 import GPTDatasetV1  # or defined inline
-
-# Instantiate tokenizer and dataloader
-tokenizer = tiktoken.get_encoding("gpt2")
-# ... check notebooks for full execution steps
-```
