@@ -4,10 +4,11 @@ A step-by-step, hands-on implementation of the core building blocks of a Large L
 
 ---
 
-## 📂 Repository Structure
+## 📂 Repository Structure & Markdown Documentation
 
-- 📓 **[Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/Data_Input_Pipeline.ipynb)**: Implements text ingestion, cleaning, tokenization, vocabulary mapping, Byte Pair Encoding (BPE), sliding window data sampling, and embedding generation.
-- 📓 **[Attention_Mechanism.ipynb](file:///d:/projects/LLM/Attention_Mechanism.ipynb)**: Implements step-by-step self-attention mechanisms, starting from dot-product similarity to trainable Query-Key-Value (QKV) projections.
+- 📓 **[Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/Data_Input_Pipeline.ipynb)** | 📘 **[Data_Input_Pipeline.md Documentation Guide](file:///d:/projects/LLM/Data_Input_Pipeline.md)**: Implements text ingestion, cleaning, tokenization, vocabulary mapping, Byte Pair Encoding (BPE), sliding window data sampling, and embedding generation.
+- 📓 **[Attention_Mechanism.ipynb](file:///d:/projects/LLM/Attention_Mechanism.ipynb)** | 📘 **[Attention_Mechanism.md Documentation Guide](file:///d:/projects/LLM/Attention_Mechanism.md)**: Implements step-by-step self-attention mechanisms, starting from dot-product similarity to trainable Query-Key-Value (QKV) projections and PyTorch modules.
+- 📓 **Executed_Data_Input_Pipeline.ipynb** | 📘 **[Executed_Data_Input_Pipeline.md Verification Guide](file:///d:/projects/LLM/Executed_Data_Input_Pipeline.md)**: Verified execution trace, tensor shape breakdowns, and dataset sampling statistics.
 - 📄 **[verdict.txt](file:///d:/projects/LLM/verdict.txt)**: Raw input text (Edith Wharton's short story *The Verdict*) used to test tokenization and data loaders.
 - 📋 **[requirements.txt](file:///d:/projects/LLM/requirements.txt)**: Required dependencies including PyTorch, tiktoken, NLTK, and Jupyter.
 
