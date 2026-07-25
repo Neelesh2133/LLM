@@ -35,7 +35,8 @@ graph TD
 Attention allows models to dynamically focus on different parts of a sequence. This notebook implements:
 - **Simple Self-Attention**: Calculating attention weights using dot-product similarity between raw inputs, normalized using a custom `softmax` function.
 - **Matrix Operations**: Vectorizing the attention mechanism for batch compute using PyTorch matrix multiplication (tensor operations).
-- **Trainable Self-Attention**: Transitioning to trainable projection matrices: Query ($W_q$), Key ($W_k$), and Value ($W_v$).
+- **Trainable QKV Weights**: Transitioning to trainable weight matrices for Query ($W_q$), Key ($W_k$), and Value ($W_v$) projections, scaled dot-product attention, and context vector generation.
+- **Custom PyTorch Module (`SelfAttention_v1`)**: Encapsulating the self-attention mechanism into a clean `torch.nn.Module` subclass.
 
 ---
 
