@@ -124,3 +124,47 @@ class LayerNorm(nn.Module):
    - After passing a sample output `op` through `ln = LayerNorm(6)`, verifying `norm_op.mean(dim=-1, keepdim=True)` yields $\approx 0$ (e.g. `[0.0000, -0.0000]`).
    - Verifying `norm_op.var(dim=-1, keepdim=True, unbiased=False)` yields $\approx 1.0$ (e.g. `[0.9998, 0.9999]`).
 
+---
+
+## 6. Feed-Forward Network & GELU Activation (`FeedForward`, `GELU`)
+
+The Transformer block utilizes a position-wise Feed-Forward Network (FFN) with GELU activation to process features after multi-head attention.
+
+### 1. GELU Activation (`GELU` Module)
+
+Gaussian Error Linear Unit (GELU) provides a smooth, non-linear activation function defined using the cumulative distribution function of the Gaussian distribution:
+
+```python
+class GELU(nn.Module):
+    def __init__(self):
+        super().__init__()
+    
+    def forward(self, x):
+        return 0.5 * x * (1 + torch.tanh(
+            torch.sqrt(torch.tensor(2.0 / torch.pi)) * (x + 0.044715 * torch.pow(x, 3))
+        ))
+```
+
+### 2. Position-wise Feed-Forward Network (`FeedForward` Module)
+
+The `FeedForward` module expands hidden embeddings by a factor of 4 (`4 * emb_dim`) using an internal linear expansion layer, applies GELU non-linearity, and projects back to `emb_dim`:
+
+```python
+class FeedForward(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(cfg["emb_dim"], 4 * cfg["emb_dim"]),
+            GELU(),
+            nn.Linear(4 * cfg["emb_dim"], cfg["emb_dim"])
+        )
+
+    def forward(self, x):
+        return self.layers(x)
+```
+
+- **Input Shape**: `[Batch Size, Sequence Length, emb_dim]` (e.g., `[2, 3, 768]`)
+- **Intermediate Projection**: `[Batch Size, Sequence Length, 4 * emb_dim]` (e.g., `[2, 3, 3072]`)
+- **Output Shape**: `[Batch Size, Sequence Length, emb_dim]` (e.g., `[2, 3, 768]`)
+
+
