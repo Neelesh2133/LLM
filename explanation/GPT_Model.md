@@ -307,6 +307,46 @@ When instantiated with `GPT_CONFIG_124M`:
    - Without counting `out_head` separately (or when tied):
      $$\text{Unique Model Parameters} = 163,009,536 - 38,597,376 = 124,412,160 \quad (\approx 124\text{M})$$
 
+---
+
+## 10. Simple Text Generation (`generate_text_simple`)
+
+The autoregressive text generation pipeline crops the context window, extracts logits for the last token position, applies softmax, selects the highest probability next-token ID via greedy search (`argmax`), and appends it iteratively:
+
+```python
+def generate_text_simple(model, idx, max_new_tokens, context_size):
+    for _ in range(max_new_tokens):
+        # 1. Crop sequence to maximum supported context window length
+        idx_cond = idx[:, -context_size:]
+        
+        # 2. Forward pass through model (inference mode)
+        with torch.no_grad():
+            logits = model(idx_cond)
+        
+        # 3. Extract logits at the final time step: [Batch Size, Vocab Size]
+        logits = logits[:, -1, :]
+        
+        # 4. Compute probabilities and select highest probability token
+        prob = torch.softmax(logits, dim=-1)
+        idx_next = torch.argmax(prob, dim=-1, keepdim=True)
+        
+        # 5. Append predicted token ID to context tensor
+        idx = torch.cat((idx, idx_next), dim=1)
+        
+    return idx
+```
+
+### Generation Output Example:
+
+- **Input Prompt**: `"Hello, I am"`
+- **Tokenized Prompt**: `[15496, 11, 314, 716]` (Shape: `[1, 4]`)
+- **Generated Token IDs**: `[15496, 11, 314, 716, 27018, 24086, 47843, 30961, 38891, 3294]`
+- **Decoded Output Text**: `"Hello, I am Featureiman Byeswick palp multiple"`
+
+> [!NOTE]
+> Because the model weights are randomly initialized (untrained), the generated sequence consists of nonsensical/gibberish words. Fine-tuning or pre-training on text corpora is required for coherent text generation.
+
+
 
 
 
