@@ -214,5 +214,49 @@ class ExampleDeepNeuralNetwork(nn.Module):
 
 **Key Takeaway**: Residual connections ensure smooth gradient flow back through deep networks during backpropagation, maintaining gradient magnitudes across earlier layers and preventing model stagnation.
 
+---
+
+## 8. Complete Transformer Block (`TransformerBlock`)
+
+Combining `LayerNorm`, `MultiHeadAttention`, `FeedForward`, and residual shortcut connections forms the core `TransformerBlock`:
+
+```python
+class TransformerBlock(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        self.att = MultiHeadAttention(
+            d_in=cfg["emb_dim"],
+            d_out=cfg["emb_dim"],
+            context_length=cfg["context_length"],
+            num_heads=cfg["n_heads"],
+            dropout=cfg["drop_rate"],
+            qkv_bias=cfg["qkv_bias"]
+        )
+        self.ff = FeedForward(cfg)
+        self.norm1 = LayerNorm(cfg["emb_dim"])
+        self.norm2 = LayerNorm(cfg["emb_dim"])
+        self.drop_shortcut = nn.Dropout(cfg["drop_rate"])
+
+    def forward(self, x):
+        # 1. Attention block with residual connection
+        shortcut = x
+        x = self.norm1(x)
+        x = self.att(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut
+
+        # 2. Feed-Forward block with residual connection
+        shortcut = x
+        x = self.norm2(x)
+        x = self.ff(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut
+
+        return x
+```
+
+- **Shape Preservation**: Inputs of shape `[Batch Size, Context Length, Embedding Dim]` maintain identical shape `[B, T, D]` throughout the block, allowing multiple blocks to be chained sequentially in the full GPT model.
+
+
 
 
