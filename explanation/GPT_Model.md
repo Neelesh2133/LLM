@@ -1,6 +1,6 @@
 # GPT Model Architecture Explained
 
-Based on the `code/GPT_Model.ipynb` file, this document provides a detailed breakdown of the architecture for a GPT model, named `DummyGPTModel`, its configuration parameters, tokenization pipeline, and model output shapes.
+Based on the `code/GPT_Model.ipynb` file, this document provides a detailed breakdown of the architecture for a GPT model, named `DummyGPTModel`, its configuration parameters, tokenization pipeline, model output shapes, and Layer Normalization concepts.
 
 ---
 
@@ -39,7 +39,7 @@ GPT_CONFIG_124M = {
     "vocab_size": 50257,      # Vocabulary size (BPE tokens)
     "context_length": 1024,   # Maximum sequence context length
     "emb_dim": 768,           # Vector dimension of embeddings
-    "n_heads": 12,            # Number of multi-head attention heads
+    "n_heads": 12,            # Number of attention heads
     "n_layers": 12,           # Number of transformer block layers
     "drop_rate": 0.1,         # Dropout probability rate
     "qkv_bias": False         # Query-Key-Value projection bias flag
@@ -80,3 +80,22 @@ $$\text{Output Shape} = [B, T, V] = [2, 4, 50257]$$
 - **Batch Size ($B$)**: 2
 - **Sequence Length ($T$)**: 4
 - **Vocabulary Size ($V$)**: 50,257
+
+---
+
+## 5. Layer Normalization Fundamentals
+
+Layer Normalization stabilizes deep neural network training by normalizing activation outputs across features/channels for each sample independently.
+
+### Goal: $\text{Mean} = 0, \text{Variance} = 1$
+
+1. **Calculating Feature Mean & Variance**:
+   - Given an activation tensor `op` (e.g. from a Linear layer with ReLU):
+     $$\mu = \text{op.mean}(\text{dim}=-1, \text{keepdim}=\text{True})$$
+     $$\sigma^2 = \text{op.var}(\text{dim}=-1, \text{keepdim}=\text{True})$$
+
+2. **Applying Normalization Formula**:
+   $$\text{norm} = \frac{\text{op} - \mu}{\sqrt{\sigma^2 + \epsilon}}$$
+
+3. **Verification**:
+   - Calculating `norm.var(dim=1, keepdim=True)` yields `tensor([[1.0000], [1.0000]])`, confirming that the normalized outputs achieve a unit variance of 1 (and zero mean).
