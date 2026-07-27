@@ -167,4 +167,52 @@ class FeedForward(nn.Module):
 - **Intermediate Projection**: `[Batch Size, Sequence Length, 4 * emb_dim]` (e.g., `[2, 3, 3072]`)
 - **Output Shape**: `[Batch Size, Sequence Length, emb_dim]` (e.g., `[2, 3, 768]`)
 
+---
+
+## 7. Shortcut / Residual Connections (`ExampleDeepNeuralNetwork`)
+
+Shortcut (residual) connections bypass one or more layers by adding the input directly to the layer output:
+
+$$\text{Output} = x + f(x)$$
+
+### Implementation & Gradient Comparison
+
+To demonstrate how residual connections mitigate the **vanishing gradient problem**, a 5-layer deep neural network with and without shortcuts was evaluated:
+
+```python
+class ExampleDeepNeuralNetwork(nn.Module):
+    def __init__(self, layer_sizes, use_shortcut):
+        super().__init__()
+        self.use_shortcut = use_shortcut
+        self.layers = nn.ModuleList([
+            nn.Sequential(nn.Linear(layer_sizes[0], layer_sizes[1]), GELU()),
+            nn.Sequential(nn.Linear(layer_sizes[1], layer_sizes[2]), GELU()),
+            nn.Sequential(nn.Linear(layer_sizes[2], layer_sizes[3]), GELU()),
+            nn.Sequential(nn.Linear(layer_sizes[3], layer_sizes[4]), GELU()),
+            nn.Sequential(nn.Linear(layer_sizes[4], layer_sizes[5]), GELU())
+        ])
+
+    def forward(self, x):
+        for layer in self.layers:
+            layer_output = layer(x)
+            if self.use_shortcut and x.shape == layer_output.shape:
+                x = x + layer_output
+            else:
+                x = layer_output
+        return x
+```
+
+### Empirical Gradient Analysis:
+
+| Layer | Without Shortcut Mean Gradient | With Shortcut Mean Gradient |
+| :--- | :--- | :--- |
+| **Layer 0 (Initial)** | `0.000150` *(Vanishing)* | `0.231017` *(Preserved)* |
+| **Layer 1** | `0.000140` | `0.237078` |
+| **Layer 2** | `0.000607` | `0.348110` |
+| **Layer 3** | `0.001125` | `0.133329` |
+| **Layer 4 (Final)** | `0.004503` | `1.821952` |
+
+**Key Takeaway**: Residual connections ensure smooth gradient flow back through deep networks during backpropagation, maintaining gradient magnitudes across earlier layers and preventing model stagnation.
+
+
 
