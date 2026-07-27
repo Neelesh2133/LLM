@@ -83,19 +83,44 @@ $$\text{Output Shape} = [B, T, V] = [2, 4, 50257]$$
 
 ---
 
-## 5. Layer Normalization Fundamentals
+## 5. Layer Normalization Implementation (`LayerNorm`)
 
 Layer Normalization stabilizes deep neural network training by normalizing activation outputs across features/channels for each sample independently.
 
-### Goal: $\text{Mean} = 0, \text{Variance} = 1$
+### Custom `LayerNorm` Module (`nn.Module`)
 
-1. **Calculating Feature Mean & Variance**:
-   - Given an activation tensor `op` (e.g. from a Linear layer with ReLU):
-     $$\mu = \text{op.mean}(\text{dim}=-1, \text{keepdim}=\text{True})$$
-     $$\sigma^2 = \text{op.var}(\text{dim}=-1, \text{keepdim}=\text{True})$$
+The custom implementation defines learnable scale ($\gamma$) and shift ($\beta$) parameters along with a small epsilon ($\epsilon$) for numerical stability:
 
-2. **Applying Normalization Formula**:
-   $$\text{norm} = \frac{\text{op} - \mu}{\sqrt{\sigma^2 + \epsilon}}$$
+```python
+class LayerNorm(nn.Module):
+    def __init__(self, emb_dim):
+        super().__init__()
+        self.eps = 1e-5
+        self.scale = nn.Parameter(torch.ones(emb_dim))   # Learnable scale (gamma)
+        self.shift = nn.Parameter(torch.zeros(emb_dim))  # Learnable shift (beta)
 
-3. **Verification**:
-   - Calculating `norm.var(dim=1, keepdim=True)` yields `tensor([[1.0000], [1.0000]])`, confirming that the normalized outputs achieve a unit variance of 1 (and zero mean).
+    def forward(self, x):
+        mean = x.mean(dim=-1, keepdim=True)
+        var = x.var(dim=-1, keepdim=True, unbiased=False)
+        norm_x = (x - mean) / torch.sqrt(var + self.eps)
+        return self.scale * norm_x + self.shift
+```
+
+### Key Steps & Formulas:
+
+1. **Mean & Variance Calculation**:
+   - Computes mean $\mu$ and biased variance $\sigma^2$ (`unbiased=False`) across the last dimension (`dim=-1`):
+     $$\mu = \frac{1}{d} \sum_{i=1}^d x_i, \quad \sigma^2 = \frac{1}{d} \sum_{i=1}^d (x_i - \mu)^2$$
+
+2. **Standardization**:
+   - Normalizes input features to zero mean and unit variance:
+     $$\hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}$$
+
+3. **Scale & Shift Transformation**:
+   - Multiplies by `scale` ($\gamma$) and adds `shift` ($\beta$):
+     $$y = \gamma \odot \hat{x} + \beta$$
+
+4. **Empirical Verification**:
+   - After passing a sample output `op` through `ln = LayerNorm(6)`, verifying `norm_op.mean(dim=-1, keepdim=True)` yields $\approx 0$ (e.g. `[0.0000, -0.0000]`).
+   - Verifying `norm_op.var(dim=-1, keepdim=True, unbiased=False)` yields $\approx 1.0$ (e.g. `[0.9998, 0.9999]`).
+
