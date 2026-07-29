@@ -392,6 +392,31 @@ plt.savefig("temperature-plot.pdf")
 plt.show()
 ```
 
+---
+
+### Top-k Sampling
+
+Top-k sampling filters the candidate next-tokens to only the top $k$ highest-probability tokens, setting all other logit values to $-\infty$ before applying Softmax:
+
+$$\text{Top-k Mask: } \tilde{Z}_i = \begin{cases} Z_i & \text{if } Z_i \ge \text{Top-k threshold} \\ -\infty & \text{otherwise} \end{cases}$$
+
+```python
+top_k = 3
+top_logits, top_pos = torch.topk(next_token_logits, top_k)
+# top_logits: tensor([6.7500, 6.2800, 4.5100])
+
+# Mask all logits below the top-k threshold to -inf
+new_logits = torch.where(
+    next_token_logits < top_logits[-1],
+    torch.tensor(float("-inf")),
+    next_token_logits
+)
+# Softmax over masked logits
+prob = torch.softmax(new_logits, dim=0)
+# Resulting probabilities for non-top-k indices are 0.0000
+```
+
+
 
 ---
 
