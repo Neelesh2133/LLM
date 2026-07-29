@@ -359,6 +359,40 @@ $$P(y_i) = \text{softmax}\left(\frac{Z}{T}\right)_i = \frac{\exp(Z_i / T)}{\sum_
 - **$T < 1.0$ (e.g. 0.5)**: Sharpens distribution, increasing probability of high-confidence tokens (more deterministic).
 - **$T > 1.0$ (e.g. 2.0)**: Flattens distribution, increasing probability of lower-ranked tokens (more creative / random).
 
+### Python Implementation & Temperature Visualization (`temperature-plot.pdf`)
+
+```python
+vocab = {
+    "closer": 0, "every": 1, "effort": 2, "forward": 3,
+    "inches": 4, "moves": 5, "pizza": 6, "toward": 7, "you": 8
+}
+inverse_vocab = {v: k for k, v in vocab.items()}
+
+# Example next-token logits output by LLM
+next_token_logits = torch.tensor([4.51, 0.89, -1.90, 6.75, 1.63, -1.62, -1.89, 6.28, 1.79])
+
+# Calculate temperature-scaled softmax distributions
+temperatures = [0.1, 0.5, 1.0, 2.0]
+scaled_probas = [torch.softmax(next_token_logits / T, dim=-1) for T in temperatures]
+
+# Plotting bar chart comparison across temperatures
+x = torch.arange(len(vocab))
+bar_width = 0.15
+fig, ax = plt.subplots(figsize=(6, 3.5))
+
+for i, T in enumerate(temperatures):
+    ax.bar(x + i * bar_width, scaled_probas[i], bar_width, label=f'Temperature = {T}')
+
+ax.set_ylabel('Probability')
+ax.set_xticks(x + bar_width * 1.5)
+ax.set_xticklabels(vocab.keys(), rotation=45)
+ax.legend()
+plt.tight_layout()
+plt.savefig("temperature-plot.pdf")
+plt.show()
+```
+
+
 ---
 
 ## 🔑 Key Summary Takeaways

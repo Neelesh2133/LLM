@@ -355,3 +355,5 @@ cython_debug/
 .jupyter_config/
 .jupyter_data/
 .jupyter_runtime/
+.virtual_documents/
+
