@@ -14,6 +14,7 @@ LLM/
 │   ├── Executed_Data_Input_Pipeline.ipynb
 │   ├── GPT_Model.ipynb
 │   ├── Pretraining_Model.ipynb
+│   ├── Loading_a_model.ipynb
 │   ├── Multiheadattention.py
 │   ├── gpt_model.py
 │   └── the-verdict.txt
@@ -23,7 +24,8 @@ LLM/
 │   ├── Executed_Data_Input_Pipeline.md
 │   ├── GPT_Model.md
 │   ├── Transformer_Block.md
-│   └── Pretraining_Model.md
+│   ├── Pretraining_Model.md
+│   └── Loading_a_model.md
 ├── README.md                        # Project Overview & Setup Instructions
 └── requirements.txt                 # Project Dependencies
 ```
@@ -39,6 +41,8 @@ LLM/
 | **Executed Pipeline Trace** | [Executed_Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/code/Executed_Data_Input_Pipeline.ipynb) | [Executed_Data_Input_Pipeline.md](file:///d:/projects/LLM/explanation/Executed_Data_Input_Pipeline.md) | Execution trace, data batch shapes, token counts, and embedding verification. |
 | **GPT Model Architecture** | [GPT_Model.ipynb](file:///d:/projects/LLM/code/GPT_Model.ipynb) | [GPT_Model.md](file:///d:/projects/LLM/explanation/GPT_Model.md) | Full GPT model class (`DummyGPTModel`), Layer Normalization, multi-head attention blocks, and forward pass output shapes. |
 | **Model Pretraining** | [Pretraining_Model.ipynb](file:///d:/projects/LLM/code/Pretraining_Model.ipynb) | [Pretraining_Model.md](file:///d:/projects/LLM/explanation/Pretraining_Model.md) | Pretraining GPT on unlabeled text, cross-entropy loss, perplexity calculation, training loop, loss plotting, and temperature scaling. |
+| **Loading Saved Model** | [Loading_a_model.ipynb](file:///d:/projects/LLM/code/Loading_a_model.ipynb) | [Loading_a_model.md](file:///d:/projects/LLM/explanation/Loading_a_model.md) | Loading saved PyTorch model checkpoint weights into a `GPTModel` instance for evaluation/inference. |
+
 
 ---
 
