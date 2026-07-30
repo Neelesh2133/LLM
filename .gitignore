@@ -351,9 +351,14 @@ cython_debug/
 .pixi
 *.egg-info
 
+
 # Jupyter local files
 .jupyter_config/
 .jupyter_data/
 .jupyter_runtime/
 .virtual_documents/
+
+# Downloaded model weights
+code/gpt2/
+
 
