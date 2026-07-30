@@ -61,4 +61,22 @@ print("Token embedding weight tensor shape:", params["wte"].shape) # Output: (50
 - **`settings`**: Contains hyperparameter metadata such as `n_vocab` (50257), `n_ctx` (1024), `n_embd` (768), `n_head` (12), `n_layer` (12).
 - **`params`**: Dictionary containing NumPy weight arrays for embeddings (`wte`, `wpe`), transformer blocks, and layer norms.
 
+---
+
+## 🎲 Text Generation with Top-k Sampling
+
+When generating text using the pre-trained weights, top-k sampling restricts top predictions to the top-k highest probability tokens at each generation step:
+
+```python
+token_ids = generate(
+    model=gpt,
+    idx=text_to_token_ids("every one", tokenizer).to(device),
+    max_new_tokens=25,
+    context_size=NEW_CONFIG["context_length"],
+    top_k=50,
+    temperature=1.4
+)
+```
+
+
 
