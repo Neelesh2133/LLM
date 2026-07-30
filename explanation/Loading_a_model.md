@@ -25,8 +25,9 @@ GPT_CONFIG_124M = {
 # 1. Instantiate model structure
 model = GPTModel(GPT_CONFIG_124M)
 
-# 2. Load model weights checkpoint
-# model.load_state_dict(torch.load("model.pth"))
+# 2. Select compute device and load model weights checkpoint
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.load_state_dict(torch.load("model.pth", map_location=device))
 
 # 3. Set evaluation mode for inference (disables dropout)
 model.eval()
@@ -37,5 +38,7 @@ model.eval()
 ## 🔑 Key Steps for Checkpoint Loading
 
 1. **Architecture Matching**: The configuration dictionary (`cfg`) supplied to `GPTModel` must match the exact dimensions (`vocab_size`, `emb_dim`, `n_layers`, `n_heads`) used during training.
-2. **`state_dict` Loading**: `model.load_state_dict(torch.load(model_path))` maps saved weight tensors to the corresponding model parameters.
-3. **Evaluation Mode**: Always call `model.eval()` before running inference to disable stochastic dropout layers (`nn.Dropout`) and ensure deterministic outputs.
+2. **Device-Aware Loading**: Using `map_location=device` inside `torch.load()` ensures parameters are appropriately dispatched to GPU (`cuda`) or CPU without device mismatch issues.
+3. **`state_dict` Verification**: Successful loading returns `<All keys matched successfully>`, verifying all layer weights align with the model architecture.
+4. **Pre-trained OpenAI Weights Integration**: Pre-trained weights from OpenAI models (e.g., GPT-2 124M) can be converted and loaded into the `GPTModel` instance.
+
