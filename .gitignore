@@ -359,10 +359,14 @@ cython_debug/
 .virtual_documents/
 
 # Downloaded model weights & data
-code/gpt2/
-code/sms_spam_collection.zip
-code/sms_spam_collection/
-code/*.csv
+04_pretraining/gpt2/
+04_pretraining/model.pth
+05_finetuning/sms_spam_collection.zip
+05_finetuning/sms_spam_collection/
+05_finetuning/*.csv
+model.pth
+*.pth
+
 
 
 
