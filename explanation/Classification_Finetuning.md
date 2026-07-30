@@ -49,19 +49,40 @@ download_and_unzip_spam_data(url, zip_path, extracted_path, data_file_path)
 
 ---
 
-## 📊 Dataset Loading & Class Distribution
+## ⚖️ Creating a Balanced Dataset
 
-The raw dataset is loaded using Pandas into a structured DataFrame containing `Label` and `Text` columns:
+To prevent bias toward the majority class (`ham`), a subset of `ham` samples is randomly sampled to match the total count of `spam` instances (747 each):
 
 ```python
-import pandas as pd
+def create_balanced_dataset(df):
+    num_spam = df[df["Label"] == "spam"].shape[0]
+    ham_subset = df[df["Label"] == "ham"].sample(num_spam, random_state=123)
+    balanced_df = pd.concat([ham_subset, df[df["Label"] == "spam"]])
+    return balanced_df
 
-df = pd.read_csv(data_file_path, sep="\t", header=None, names=["Label", "Text"])
-df.head(5)
+balanced_df = create_balanced_dataset(df)
+# Output: ham: 747, spam: 747
+
+# Map labels: ham -> 0, spam -> 1
+map_dict = {"ham": 0, "spam": 1}
+balanced_df["Label"] = balanced_df["Label"].map(map_dict)
 ```
 
-### Class Distribution (Imbalance)
-- **`ham`** (legitimate messages): **4,825**
-- **`spam`** (unwanted messages): **747**
+---
 
-> ⚠️ **Note:** The dataset displays class imbalance (~86.5% ham vs ~13.5% spam), which must be handled during dataset splitting and performance evaluation metrics (e.g., tracking F1-score/Accuracy alongside loss).
+## 🔀 Dataset Splitting Strategy
+
+The balanced dataset is split into training, validation, and test sets using a reproducible random shuffle:
+
+```python
+def random_split(df, train_frac, validation_frac):
+    df = df.sample(frac=1, random_state=123).reset_index(drop=True)
+    train_end = int(len(df) * train_frac)
+    validation_end = train_end + int(len(df) * validation_frac)
+    
+    train_df = df[:train_end]
+    validation_df = df[train_end:validation_end]
+    test_df = df[validation_end:]
+    return train_df, validation_df, test_df
+```
+

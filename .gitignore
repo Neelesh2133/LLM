@@ -362,6 +362,8 @@ cython_debug/
 code/gpt2/
 code/sms_spam_collection.zip
 code/sms_spam_collection/
+code/*.csv
+
 
 
 
