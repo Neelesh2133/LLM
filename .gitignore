@@ -358,7 +358,10 @@ cython_debug/
 .jupyter_runtime/
 .virtual_documents/
 
-# Downloaded model weights
+# Downloaded model weights & data
 code/gpt2/
+code/sms_spam_collection.zip
+code/sms_spam_collection/
+
 
 
