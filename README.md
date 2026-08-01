@@ -11,26 +11,31 @@ LLM/
 ├── 📁 01_data_pipeline/                # Text reading, tokenization, dataset & embeddings
 │   ├── Data_Input_Pipeline.ipynb
 │   ├── Data_Input_Pipeline.md
+│   ├── 📊 Visualization_Data_Pipeline.md
 │   ├── Executed_Data_Input_Pipeline.md
 │   └── verdict.txt
 ├── 📁 02_attention_mechanism/         # Self-attention, multi-head attention & matrices
 │   ├── Attention_Mechanism.ipynb
 │   ├── Attention_Mechanism.md
+│   ├── 📊 Visualization_Attention.md
 │   └── Multiheadattention.py
 ├── 📁 03_gpt_architecture/            # Transformer block & full GPT model construction
 │   ├── GPT_Model.ipynb
 │   ├── GPT_Model.md
 │   ├── Transformer_Block.md
+│   ├── 📊 Visualization_GPT_Architecture.md
 │   └── gpt_model.py
 ├── 📁 04_pretraining/                 # Pre-training loop, evaluation loss & weight loading
 │   ├── Pretraining_Model.ipynb
 │   ├── Pretraining_Model.md
 │   ├── Loading_a_model.ipynb
 │   ├── Loading_a_model.md
+│   ├── 📊 Visualization_Pretraining.md
 │   └── gpt_code.py
 ├── 📁 05_finetuning/                  # Classification fine-tuning & dataset balancing
 │   ├── Classification_Finetuning.ipynb
-│   └── Classification_Finetuning.md
+│   ├── Classification_Finetuning.md
+│   └── 📊 Visualization_Finetuning.md
 ├── README.md                           # Project Overview & Setup Instructions
 └── requirements.txt                    # Project Dependencies
 ```
@@ -39,13 +44,13 @@ LLM/
 
 ## 🗂️ Modules & Detailed Explanations
 
-| Module | 💻 Implementation Code | 📘 Explanation Guide | Description |
-|---|---|---|---|
-| **01. Data Input Pipeline** | [Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/01_data_pipeline/Data_Input_Pipeline.ipynb) | [Data_Input_Pipeline.md](file:///d:/projects/LLM/01_data_pipeline/Data_Input_Pipeline.md) | Text reading, Regex/NLTK/BPE tokenization, sliding window dataset, and token/positional embeddings. |
-| **02. Attention Mechanism** | [Attention_Mechanism.ipynb](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.ipynb) | [Attention_Mechanism.md](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.md) | Dot-product self-attention, matrix multiplication, trainable QKV weights, scaling factor, and PyTorch modules. |
-| **03. GPT Model Architecture** | [GPT_Model.ipynb](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.ipynb) | [GPT_Model.md](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.md) | Full GPT model class (`GPTModel`), Layer Normalization, multi-head attention blocks, and forward pass output shapes. |
-| **04. Model Pretraining** | [Pretraining_Model.ipynb](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.ipynb) | [Pretraining_Model.md](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.md) | Pretraining GPT on unlabeled text, cross-entropy loss, perplexity calculation, training loop, loss plotting, and loading saved weights. |
-| **05. Classification Finetuning** | [Classification_Finetuning.ipynb](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.ipynb) | [Classification_Finetuning.md](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.md) | Fine-tuning GPT for text classification, SMS spam collection dataset downloading, class balancing, and split creation. |
+| Module | 💻 Implementation Code | 📘 Explanation Guide | 📊 Visual Workflow | Description |
+|---|---|---|---|---|
+| **01. Data Input Pipeline** | [Data_Input_Pipeline.ipynb](file:///d:/projects/LLM/01_data_pipeline/Data_Input_Pipeline.ipynb) | [Data_Input_Pipeline.md](file:///d:/projects/LLM/01_data_pipeline/Data_Input_Pipeline.md) | [Visualization_Data_Pipeline.md](file:///d:/projects/LLM/01_data_pipeline/Visualization_Data_Pipeline.md) | Text reading, Regex/NLTK/BPE tokenization, sliding window dataset, and token/positional embeddings. |
+| **02. Attention Mechanism** | [Attention_Mechanism.ipynb](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.ipynb) | [Attention_Mechanism.md](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.md) | [Visualization_Attention.md](file:///d:/projects/LLM/02_attention_mechanism/Visualization_Attention.md) | Dot-product self-attention, matrix multiplication, trainable QKV weights, scaling factor, and PyTorch modules. |
+| **03. GPT Model Architecture** | [GPT_Model.ipynb](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.ipynb) | [GPT_Model.md](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.md) | [Visualization_GPT_Architecture.md](file:///d:/projects/LLM/03_gpt_architecture/Visualization_GPT_Architecture.md) | Full GPT model class (`GPTModel`), Layer Normalization, multi-head attention blocks, and forward pass output shapes. |
+| **04. Model Pretraining** | [Pretraining_Model.ipynb](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.ipynb) | [Pretraining_Model.md](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.md) | [Visualization_Pretraining.md](file:///d:/projects/LLM/04_pretraining/Visualization_Pretraining.md) | Pretraining GPT on unlabeled text, cross-entropy loss, perplexity calculation, training loop, loss plotting, and loading saved weights. |
+| **05. Classification Finetuning** | [Classification_Finetuning.ipynb](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.ipynb) | [Classification_Finetuning.md](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.md) | [Visualization_Finetuning.md](file:///d:/projects/LLM/05_finetuning/Visualization_Finetuning.md) | Fine-tuning GPT for text classification, SMS spam collection dataset downloading, class balancing, and split creation. |
 
 ---
 
