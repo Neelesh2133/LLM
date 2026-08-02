@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive GPT-2 UI — Text generation and spam classification powered by a GPT-2 model trained from scratch.">
-    <title>GPT-2 Studio — Text Generation & Classification</title>
+    <meta name="description" content="GPT-2 Engineering Studio — Text Generation, Spam Classification, and Architecture Visualizer.">
+    <title>GPT-2 Engineering Studio</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 </head>
@@ -13,179 +13,273 @@
         <!-- ==================== SIDEBAR ==================== -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <div class="logo-icon">G2</div>
-                    <h1>GPT-2 Studio</h1>
+                <div class="brand-row">
+                    <div class="brand-badge">G2</div>
+                    <div>
+                        <div class="brand-title">GPT-2 Studio</div>
+                        <div class="brand-sub">124M Parameters</div>
+                    </div>
                 </div>
-                <p class="sidebar-subtitle">Built from scratch</p>
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-section-title">Modes</div>
+                <div class="nav-group-label">Workspace</div>
 
                 <div class="nav-item active" data-mode="generate" id="nav-generate">
                     <span class="nav-icon">💬</span>
-                    <span>Text Generation</span>
-                    <span class="nav-badge">CHAT</span>
+                    <span>Text Generator</span>
+                    <span class="nav-tag">OPENAI</span>
                 </div>
 
                 <div class="nav-item" data-mode="classify" id="nav-classify">
                     <span class="nav-icon">🛡️</span>
                     <span>Spam Classifier</span>
-                    <span class="nav-badge">AI</span>
+                    <span class="nav-tag">FINE-TUNED</span>
                 </div>
 
-                <div class="nav-section-title">Info</div>
+                <div class="nav-group-label">System</div>
 
-                <div class="nav-item" style="cursor: default; opacity: 0.6;">
-                    <span class="nav-icon">🧠</span>
-                    <span>GPT-2 124M</span>
-                </div>
-                <div class="nav-item" style="cursor: default; opacity: 0.6;">
-                    <span class="nav-icon">📊</span>
-                    <span>12 Layers · 768 Dim</span>
-                </div>
-                <div class="nav-item" style="cursor: default; opacity: 0.6;">
-                    <span class="nav-icon">🔤</span>
-                    <span>50,257 Vocab</span>
+                <div class="nav-item" data-mode="architecture" id="nav-architecture">
+                    <span class="nav-icon">📐</span>
+                    <span>Architecture & Docs</span>
+                    <span class="nav-tag">PIPELINE</span>
                 </div>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="status-indicator" id="model-status">
+                <div class="status-box">
                     <div class="status-dot loading" id="status-dot"></div>
-                    <span id="status-text">Loading models...</span>
+                    <span id="status-text">Connecting...</span>
                 </div>
             </div>
         </aside>
 
-        <!-- ==================== MAIN CONTENT ==================== -->
+        <!-- ==================== MAIN WORKSPACE ==================== -->
         <main class="main-content">
 
-            <!-- ========== TEXT GENERATION MODE ========== -->
+            <!-- ========== PANEL 1: TEXT GENERATION ========== -->
             <div class="mode-panel active" id="panel-generate">
-                <div class="chat-header">
-                    <div class="chat-header-title">
-                        <h2>💬 Text Generation</h2>
-                        <span class="model-tag">GPT-2 124M</span>
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <h2>💬 Text Generation <span class="tag-red">GPT-2 124M</span></h2>
                     </div>
-                    <div class="controls-bar">
-                        <div class="control-group">
+                    <div class="controls-row">
+                        <div class="ctrl-item">
                             <label for="slider-tokens">Tokens</label>
                             <input type="range" id="slider-tokens" min="10" max="200" value="50" step="5">
-                            <span class="control-value" id="val-tokens">50</span>
+                            <span class="ctrl-val" id="val-tokens">50</span>
                         </div>
-                        <div class="control-group">
+                        <div class="ctrl-item">
                             <label for="slider-temp">Temp</label>
-                            <input type="range" id="slider-temp" min="0" max="200" value="100" step="5">
-                            <span class="control-value" id="val-temp">1.0</span>
+                            <input type="range" id="slider-temp" min="0" max="200" value="80" step="5">
+                            <span class="ctrl-val" id="val-temp">0.8</span>
                         </div>
-                        <div class="control-group">
+                        <div class="ctrl-item">
                             <label for="slider-topk">Top-K</label>
-                            <input type="range" id="slider-topk" min="1" max="100" value="50" step="1">
-                            <span class="control-value" id="val-topk">50</span>
+                            <input type="range" id="slider-topk" min="1" max="100" value="40" step="1">
+                            <span class="ctrl-val" id="val-topk">40</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="chat-messages" id="chat-messages">
-                    <div class="chat-welcome" id="chat-welcome">
-                        <div class="welcome-icon">⚡</div>
-                        <h3>GPT-2 Text Generation</h3>
-                        <p>Type a prompt and watch your model generate text continuations. This model was pretrained from scratch on custom data.</p>
-                        <div class="welcome-chips">
-                            <div class="welcome-chip" data-prompt="The meaning of life is">The meaning of life is</div>
-                            <div class="welcome-chip" data-prompt="In a distant galaxy,">In a distant galaxy,</div>
-                            <div class="welcome-chip" data-prompt="The future of artificial intelligence">The future of AI</div>
-                            <div class="welcome-chip" data-prompt="Once upon a time, there was">Once upon a time</div>
-                            <div class="welcome-chip" data-prompt="Every effort moves you">Every effort moves you</div>
+                <div class="chat-viewport" id="chat-messages">
+                    <div class="welcome-screen" id="chat-welcome">
+                        <div class="welcome-logo">⚡</div>
+                        <h3>GPT-2 Text Completion</h3>
+                        <p>Powered by OpenAI's pretrained 124M parameter weights loaded into your PyTorch model. Select a prompt or enter your own.</p>
+                        <div class="chip-grid">
+                            <div class="prompt-chip" data-prompt="The future of artificial intelligence">The future of artificial intelligence</div>
+                            <div class="prompt-chip" data-prompt="Every effort moves you">Every effort moves you</div>
+                            <div class="prompt-chip" data-prompt="In a distant galaxy, human explorers">In a distant galaxy</div>
+                            <div class="prompt-chip" data-prompt="The key to understanding neural networks">Understanding neural networks</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="chat-input-area">
-                    <div class="chat-input-wrapper">
-                        <div class="chat-input-container">
-                            <textarea class="chat-input" id="chat-input"
-                                placeholder="Type your prompt here... (Enter to send, Shift+Enter for new line)"
-                                rows="1"></textarea>
-                        </div>
-                        <button class="send-btn" id="send-btn" title="Send">
+                    <div class="input-box">
+                        <textarea id="chat-input" placeholder="Type prompt... (Enter to generate, Shift+Enter for new line)" rows="1"></textarea>
+                        <button class="btn-send" id="send-btn" title="Run Generation">
                             <span id="send-icon">➤</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== CLASSIFICATION MODE ========== -->
+            <!-- ========== PANEL 2: SPAM CLASSIFIER ========== -->
             <div class="mode-panel" id="panel-classify">
-                <div class="classify-header">
-                    <h2>🛡️ Spam Classifier <span class="model-tag">Fine-tuned</span></h2>
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <h2>🛡️ Spam Classifier <span class="tag-red">SMS Dataset Fine-Tuned</span></h2>
+                    </div>
                 </div>
 
-                <div class="classify-body">
-                    <div class="classify-input-card">
-                        <h3>Enter text to classify</h3>
-                        <textarea class="classify-textarea" id="classify-input"
-                            placeholder="Paste or type a message to check if it's spam or legitimate..."></textarea>
-                        <div class="classify-actions">
-                            <span class="char-count" id="char-count">0 chars</span>
-                            <button class="classify-btn" id="classify-btn">
-                                <span id="classify-btn-text">🔍 Classify</span>
+                <div class="classify-viewport">
+                    <div class="classify-card">
+                        <h3>Input Message</h3>
+                        <textarea id="classify-input" placeholder="Paste message to classify as SPAM or HAM..."></textarea>
+                        <div class="card-footer">
+                            <span class="mono" id="char-count" style="font-size: 11px; color: var(--text-dark);">0 chars</span>
+                            <button class="btn-red" id="classify-btn">
+                                <span id="classify-btn-text">⚡ Classify Message</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="example-chips">
-                        <div class="example-chips-title">Try an example</div>
-                        <div class="example-chip ham" data-text="Hey, just wanted to check if we're still on for dinner tonight? Let me know!">
-                            💬 Dinner tonight?
+                    <div class="example-title">Quick Test Presets</div>
+                    <div class="example-list">
+                        <div class="ex-chip ham-ex" data-text="Hey, just wanted to check if we're still on for dinner tonight? Let me know!">
+                            💬 Dinner tonight? (HAM)
                         </div>
-                        <div class="example-chip ham" data-text="Ok see you at 7 pm">
-                            💬 See you at 7 pm
+                        <div class="ex-chip ham-ex" data-text="Ok see you at 7 pm">
+                            💬 See you at 7 pm (HAM)
                         </div>
-                        <div class="example-chip spam" data-text="FREE entry into our weekly draw. Text WIN to 80086 to claim your reward.">
-                            🚨 FREE draw entry
+                        <div class="ex-chip spam-ex" data-text="FREE entry into our weekly draw. Text WIN to 80086 to claim your reward.">
+                            🚨 FREE draw entry (SPAM)
                         </div>
-                        <div class="example-chip spam" data-text="CONGRATULATIONS! You've won a $1000 gift card. Click here to claim now!">
-                            🚨 Won a gift card
-                        </div>
-                        <div class="example-chip ham" data-text="Can you pick up some groceries on the way home? We need milk and bread.">
-                            💬 Pick up groceries
-                        </div>
-                        <div class="example-chip spam" data-text="URGENT: Your account has been compromised! Click this link immediately to secure it.">
-                            🚨 Account compromised
+                        <div class="ex-chip spam-ex" data-text="CONGRATULATIONS! You've won a $1000 gift card. Click here to claim now!">
+                            🚨 Won $1000 card (SPAM)
                         </div>
                     </div>
 
-                    <div class="classify-result" id="classify-result">
-                        <div class="result-header">
-                            <div class="result-icon" id="result-icon"></div>
+                    <div class="result-card" id="classify-result">
+                        <div class="res-header">
                             <div>
-                                <div class="result-label" id="result-label"></div>
-                                <div class="result-sublabel" id="result-sublabel"></div>
+                                <div class="res-tag" id="result-label">SPAM</div>
+                                <div class="res-desc" id="result-sublabel">Classification Result</div>
+                            </div>
+                            <div class="mono" id="confidence-value" style="font-size: 24px; font-weight: 800;">99.1%</div>
+                        </div>
+
+                        <div class="meter-box">
+                            <div style="font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text-dark); text-transform: uppercase;">Confidence Score</div>
+                            <div class="meter-track">
+                                <div class="meter-fill" id="confidence-bar"></div>
                             </div>
                         </div>
-                        <div class="confidence-section">
-                            <div class="confidence-label">Confidence</div>
-                            <div class="confidence-bar-bg">
-                                <div class="confidence-bar-fill" id="confidence-bar"></div>
+
+                        <div class="logits-row">
+                            <div class="logit-box">
+                                <span style="color: var(--text-muted);">HAM Logit:</span>
+                                <span id="logit-ham" style="color: var(--status-success); font-weight: 700;">-1.649</span>
                             </div>
-                            <div class="confidence-value" id="confidence-value"></div>
+                            <div class="logit-box">
+                                <span style="color: var(--text-muted);">SPAM Logit:</span>
+                                <span id="logit-spam" style="color: var(--status-danger); font-weight: 700;">+3.027</span>
+                            </div>
                         </div>
-                        <div class="logits-section">
-                            <div class="logits-title">Raw Logits</div>
-                            <div class="logits-grid">
-                                <div class="logit-item">
-                                    <span class="logit-label">Ham (class 0)</span>
-                                    <span class="logit-value" id="logit-ham">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== PANEL 3: ARCHITECTURE & DOCS ========== -->
+            <div class="mode-panel" id="panel-architecture">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <h2>📐 Architecture & Pipeline Breakdown <span class="tag-red">PyTorch Implementation</span></h2>
+                    </div>
+                </div>
+
+                <div class="arch-viewport">
+                    <div class="arch-container">
+                        <!-- Overview Header -->
+                        <div class="arch-header">
+                            <h3>GPT-2 124M Transformer Pipeline</h3>
+                            <p>Hand-built PyTorch implementation of the decoder-only GPT-2 transformer architecture based on OpenAI specifications. Features causal self-attention, pre-layer normalization, GELU feed-forward networks, and task-specific classification head fine-tuning.</p>
+                        </div>
+
+                        <!-- Technical Specs Grid -->
+                        <div class="specs-grid">
+                            <div class="spec-card">
+                                <div class="lbl">Parameters</div>
+                                <div class="val">124M</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="lbl">Layers (N)</div>
+                                <div class="val">12</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="lbl">Embed Dim</div>
+                                <div class="val">768</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="lbl">Heads</div>
+                                <div class="val">12</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="lbl">Context</div>
+                                <div class="val">1024</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="lbl">Vocab Size</div>
+                                <div class="val">50,257</div>
+                            </div>
+                        </div>
+
+                        <!-- Flow Diagram Section -->
+                        <div class="diagram-section">
+                            <h4>// END-TO-END MODEL PIPELINE FLOW</h4>
+                            
+                            <div class="pipeline-flow">
+                                <!-- Step 1 -->
+                                <div class="node-block">
+                                    <div class="node-info">
+                                        <div class="title">1. Raw Text Input & Tokenization</div>
+                                        <div class="desc">Encodes prompt text into token IDs using Byte-Pair Encoding (BPE)</div>
+                                    </div>
+                                    <div class="node-tag">tiktoken (gpt2)</div>
                                 </div>
-                                <div class="logit-item">
-                                    <span class="logit-label">Spam (class 1)</span>
-                                    <span class="logit-value" id="logit-spam">—</span>
+
+                                <div class="flow-arrow">↓</div>
+
+                                <!-- Step 2 -->
+                                <div class="node-block">
+                                    <div class="node-info">
+                                        <div class="title">2. Embedding Layer (Token + Positional)</div>
+                                        <div class="desc">Combines Token Embeddings W_te [50257, 768] + Positional Embeddings W_pe [1024, 768]</div>
+                                    </div>
+                                    <div class="node-tag">Shape: (B, T, 768)</div>
+                                </div>
+
+                                <div class="flow-arrow">↓</div>
+
+                                <!-- Step 3 -->
+                                <div class="node-block highlight">
+                                    <div class="node-info">
+                                        <div class="title">3. 12x Transformer Blocks (Stack)</div>
+                                        <div class="desc">Pre-LayerNorm → Multi-Head Attention (12 heads, Causal Mask) → Residual Add → Pre-LayerNorm → Feed-Forward (GELU, 3072 dim) → Residual Add</div>
+                                    </div>
+                                    <div class="node-tag">GPTModel</div>
+                                </div>
+
+                                <div class="flow-arrow">↓</div>
+
+                                <!-- Step 4 -->
+                                <div class="node-block">
+                                    <div class="node-info">
+                                        <div class="title">4. Final Layer Normalization</div>
+                                        <div class="desc">Applies final LayerNorm across hidden dimension (768)</div>
+                                    </div>
+                                    <div class="node-tag">LayerNorm(768)</div>
+                                </div>
+
+                                <div class="flow-arrow">↓</div>
+
+                                <!-- Dual Output Heads -->
+                                <div class="dual-head-container">
+                                    <div class="head-card active-gen">
+                                        <div class="head-title" style="color: var(--accent-red-bright);">[LM Head] Pretrained Generator</div>
+                                        <div class="head-desc">Linear(768 → 50257)<br>Top-K & Temperature Sampling</div>
+                                    </div>
+
+                                    <div class="head-card active-cls">
+                                        <div class="head-title" style="color: var(--status-success);">[Classifier Head] Fine-Tuned</div>
+                                        <div class="head-desc">Linear(768 → 2)<br>Spam vs Ham Classification</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

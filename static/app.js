@@ -1,18 +1,17 @@
 /**
- * GPT-2 Studio — Frontend Application
- * Handles mode switching, API calls, chat rendering, and classification display.
+ * GPT-2 Engineering Studio — Frontend JS
+ * Handles panel navigation, API communications, real-time typing animation, and status monitoring.
  */
 
-// ============================================================
 // DOM Elements
-// ============================================================
 const navItems = document.querySelectorAll('.nav-item[data-mode]');
 const panels = {
     generate: document.getElementById('panel-generate'),
     classify: document.getElementById('panel-classify'),
+    architecture: document.getElementById('panel-architecture'),
 };
 
-// Chat elements
+// Chat controls
 const chatMessages = document.getElementById('chat-messages');
 const chatWelcome = document.getElementById('chat-welcome');
 const chatInput = document.getElementById('chat-input');
@@ -27,13 +26,12 @@ const valTokens = document.getElementById('val-tokens');
 const valTemp = document.getElementById('val-temp');
 const valTopk = document.getElementById('val-topk');
 
-// Classification elements
+// Classifier elements
 const classifyInput = document.getElementById('classify-input');
 const classifyBtn = document.getElementById('classify-btn');
 const classifyBtnText = document.getElementById('classify-btn-text');
 const charCount = document.getElementById('char-count');
 const classifyResult = document.getElementById('classify-result');
-const resultIcon = document.getElementById('result-icon');
 const resultLabel = document.getElementById('result-label');
 const resultSublabel = document.getElementById('result-sublabel');
 const confidenceBar = document.getElementById('confidence-bar');
@@ -45,30 +43,22 @@ const logitSpam = document.getElementById('logit-spam');
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
 
-// ============================================================
 // State
-// ============================================================
 let currentMode = 'generate';
 let isGenerating = false;
 let isClassifying = false;
-let messageHistory = [];
 
-// ============================================================
-// Initialization
-// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     checkHealth();
     setupSliders();
     setupNavigation();
     setupChatInput();
     setupClassification();
-    setupWelcomeChips();
+    setupPromptChips();
     setupExampleChips();
 });
 
-// ============================================================
-// Health Check
-// ============================================================
+// Health check
 async function checkHealth() {
     try {
         const res = await fetch('/api/health');
@@ -83,21 +73,16 @@ async function checkHealth() {
                 statusText.textContent = `Models ready · ${data.device.toUpperCase()}`;
             } else {
                 statusDot.className = 'status-dot loading';
-                const missing = [];
-                if (!genLoaded) missing.push('gen');
-                if (!clsLoaded) missing.push('cls');
-                statusText.textContent = `Missing: ${missing.join(', ')}`;
+                statusText.textContent = 'Models loading...';
             }
         }
     } catch (err) {
         statusDot.className = 'status-dot error';
-        statusText.textContent = 'Connection failed';
+        statusText.textContent = 'Connection error';
     }
 }
 
-// ============================================================
-// Navigation
-// ============================================================
+// Navigation switching
 function setupNavigation() {
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -111,27 +96,22 @@ function setupNavigation() {
 function switchMode(mode) {
     currentMode = mode;
 
-    // Update nav
     navItems.forEach(item => {
         item.classList.toggle('active', item.dataset.mode === mode);
     });
 
-    // Update panels
     Object.entries(panels).forEach(([key, panel]) => {
-        panel.classList.toggle('active', key === mode);
+        if (panel) panel.classList.toggle('active', key === mode);
     });
 
-    // Focus appropriate input
     if (mode === 'generate') {
         chatInput.focus();
-    } else {
+    } else if (mode === 'classify') {
         classifyInput.focus();
     }
 }
 
-// ============================================================
-// Sliders
-// ============================================================
+// Slider controls
 function setupSliders() {
     sliderTokens.addEventListener('input', () => {
         valTokens.textContent = sliderTokens.value;
@@ -146,17 +126,13 @@ function setupSliders() {
     });
 }
 
-// ============================================================
-// Chat — Text Generation
-// ============================================================
+// Chat input handling
 function setupChatInput() {
-    // Auto-resize textarea
     chatInput.addEventListener('input', () => {
         chatInput.style.height = 'auto';
         chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
     });
 
-    // Enter to send, Shift+Enter for newline
     chatInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -167,8 +143,8 @@ function setupChatInput() {
     sendBtn.addEventListener('click', sendMessage);
 }
 
-function setupWelcomeChips() {
-    document.querySelectorAll('.welcome-chip').forEach(chip => {
+function setupPromptChips() {
+    document.querySelectorAll('.prompt-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             chatInput.value = chip.dataset.prompt;
             chatInput.dispatchEvent(new Event('input'));
@@ -181,20 +157,16 @@ async function sendMessage() {
     const prompt = chatInput.value.trim();
     if (!prompt || isGenerating) return;
 
-    // Hide welcome
-    chatWelcome.style.display = 'none';
+    if (chatWelcome) chatWelcome.style.display = 'none';
 
-    // Add user message
     addMessage('user', prompt);
     chatInput.value = '';
     chatInput.style.height = 'auto';
 
-    // Show loading
     isGenerating = true;
     sendBtn.disabled = true;
     sendIcon.innerHTML = '<div class="spinner"></div>';
 
-    // Add assistant placeholder with typing cursor
     const assistantMsgEl = addMessage('assistant', '', true);
 
     try {
@@ -212,13 +184,12 @@ async function sendMessage() {
         const data = await res.json();
 
         if (data.generated) {
-            // Type out the response
             await typeText(assistantMsgEl, data.generated);
         } else if (data.detail) {
-            assistantMsgEl.querySelector('.message-text').textContent = `Error: ${JSON.stringify(data.detail)}`;
+            assistantMsgEl.querySelector('.msg-text').textContent = `Error: ${JSON.stringify(data.detail)}`;
         }
     } catch (err) {
-        assistantMsgEl.querySelector('.message-text').textContent = `Error: ${err.message}`;
+        assistantMsgEl.querySelector('.msg-text').textContent = `Connection error: ${err.message}`;
     }
 
     isGenerating = false;
@@ -228,17 +199,17 @@ async function sendMessage() {
 
 function addMessage(role, text, showCursor = false) {
     const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${role}`;
+    msgDiv.className = `msg-bubble ${role}`;
 
     const avatarDiv = document.createElement('div');
-    avatarDiv.className = 'message-avatar';
-    avatarDiv.textContent = role === 'user' ? '👤' : '⚡';
+    avatarDiv.className = 'msg-avatar';
+    avatarDiv.textContent = role === 'user' ? 'U' : 'G2';
 
     const contentDiv = document.createElement('div');
-    contentDiv.className = 'message-content';
+    contentDiv.className = 'msg-body';
 
     const textSpan = document.createElement('span');
-    textSpan.className = 'message-text';
+    textSpan.className = 'msg-text';
     textSpan.textContent = text;
     contentDiv.appendChild(textSpan);
 
@@ -252,27 +223,23 @@ function addMessage(role, text, showCursor = false) {
     msgDiv.appendChild(contentDiv);
     chatMessages.appendChild(msgDiv);
 
-    // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     return msgDiv;
 }
 
 async function typeText(msgEl, text) {
-    const textSpan = msgEl.querySelector('.message-text');
+    const textSpan = msgEl.querySelector('.msg-text');
     const cursor = msgEl.querySelector('.typing-cursor');
     const chars = text.split('');
 
     for (let i = 0; i < chars.length; i++) {
         textSpan.textContent += chars[i];
         chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // Variable speed for natural feel
-        const delay = chars[i] === ' ' ? 15 : chars[i] === '\n' ? 40 : 20;
+        const delay = chars[i] === ' ' ? 12 : chars[i] === '\n' ? 35 : 18;
         await sleep(delay);
     }
 
-    // Remove cursor after typing
     if (cursor) cursor.remove();
 }
 
@@ -280,26 +247,17 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// ============================================================
-// Classification
-// ============================================================
+// Classifier setup
 function setupClassification() {
     classifyInput.addEventListener('input', () => {
         charCount.textContent = `${classifyInput.value.length} chars`;
-    });
-
-    classifyInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.ctrlKey) {
-            e.preventDefault();
-            classifyText();
-        }
     });
 
     classifyBtn.addEventListener('click', classifyText);
 }
 
 function setupExampleChips() {
-    document.querySelectorAll('.example-chip').forEach(chip => {
+    document.querySelectorAll('.ex-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             classifyInput.value = chip.dataset.text;
             charCount.textContent = `${chip.dataset.text.length} chars`;
@@ -316,8 +274,7 @@ async function classifyText() {
     classifyBtn.disabled = true;
     classifyBtnText.innerHTML = '<div class="spinner"></div> Classifying...';
 
-    // Hide previous result
-    classifyResult.classList.remove('visible', 'spam', 'ham');
+    classifyResult.classList.remove('visible', 'is-spam', 'is-ham');
 
     try {
         const res = await fetch('/api/classify', {
@@ -329,66 +286,35 @@ async function classifyText() {
         const data = await res.json();
         showClassificationResult(data);
     } catch (err) {
-        resultLabel.textContent = 'Error';
+        resultLabel.textContent = 'ERROR';
         resultSublabel.textContent = err.message;
-        classifyResult.classList.add('visible', 'spam');
+        classifyResult.classList.add('visible', 'is-spam');
     }
 
     isClassifying = false;
     classifyBtn.disabled = false;
-    classifyBtnText.textContent = '🔍 Classify';
+    classifyBtnText.textContent = '⚡ Classify Message';
 }
 
 function showClassificationResult(data) {
     const isSpam = data.label === 'spam';
     const confidencePct = (data.confidence * 100).toFixed(1);
 
-    // Set result card class
-    classifyResult.className = `classify-result visible ${data.label}`;
+    classifyResult.className = `result-card visible ${isSpam ? 'is-spam' : 'is-ham'}`;
 
-    // Icon
-    resultIcon.textContent = isSpam ? '🚨' : '✅';
-
-    // Label
-    resultLabel.textContent = isSpam ? 'SPAM' : 'HAM';
+    resultLabel.textContent = isSpam ? 'SPAM MESSAGE' : 'HAM MESSAGE';
     resultSublabel.textContent = isSpam
-        ? 'This message appears to be spam'
-        : 'This message appears legitimate';
+        ? 'Flagged as unwanted/spam content by classifier'
+        : 'Identified as legitimate user message';
 
-    // Confidence bar (animate)
     confidenceBar.style.width = '0%';
     confidenceValue.textContent = '0%';
 
-    // Trigger animation after a brief delay
-    requestAnimationFrame(() => {
-        setTimeout(() => {
-            confidenceBar.style.width = `${confidencePct}%`;
-            animateCounter(confidenceValue, 0, parseFloat(confidencePct), 600);
-        }, 100);
-    });
+    setTimeout(() => {
+        confidenceBar.style.width = `${confidencePct}%`;
+        confidenceValue.textContent = `${confidencePct}%`;
+    }, 50);
 
-    // Logits
-    logitHam.textContent = data.logits[0].toFixed(4);
-    logitSpam.textContent = data.logits[1].toFixed(4);
-}
-
-function animateCounter(element, start, end, duration) {
-    const startTime = performance.now();
-
-    function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = start + (end - start) * eased;
-
-        element.textContent = `${current.toFixed(1)}%`;
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
-    }
-
-    requestAnimationFrame(update);
+    logitHam.textContent = (data.logits[0] >= 0 ? '+' : '') + data.logits[0].toFixed(3);
+    logitSpam.textContent = (data.logits[1] >= 0 ? '+' : '') + data.logits[1].toFixed(3);
 }
