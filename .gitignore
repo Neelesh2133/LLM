@@ -366,6 +366,8 @@ cython_debug/
 05_finetuning/*.csv
 model.pth
 *.pth
+*.ckpt
+05_finetuning/gpt2/
 
 
 
