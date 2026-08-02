@@ -23,25 +23,15 @@ sys.path.insert(0, str(PROJECT_ROOT / "03_gpt_architecture"))
 
 from models import (  # noqa: E402
     GPTModel,
+    load_weights_into_gpt,
     text_to_token_ids,
     token_ids_to_text,
 )
+from gpt_download import download_and_load_gpt2
 
 # ---------------------------------------------------------------------------
-# GPT-2 124M Configurations
-# The pretrained model was trained with context_length=256 and no QKV bias.
-# The classifier was loaded from OpenAI GPT-2 weights (1024 ctx, QKV bias).
+# GPT-2 124M Configuration (OpenAI weights: 1024 ctx, QKV bias)
 # ---------------------------------------------------------------------------
-GPT_CONFIG_PRETRAINED = {
-    "vocab_size": 50257,
-    "context_length": 256,
-    "emb_dim": 768,
-    "n_heads": 12,
-    "n_layers": 12,
-    "drop_rate": 0.0,
-    "qkv_bias": False,
-}
-
 GPT_CONFIG_CLASSIFIER = {
     "vocab_size": 50257,
     "context_length": 1024,
@@ -64,17 +54,15 @@ models_loaded = {"generation": False, "classification": False}
 
 
 def load_generation_model():
-    """Load the pretrained GPT-2 model for text generation."""
+    """Load OpenAI's pretrained GPT-2 124M weights for text generation."""
     global gen_model
-    model_path = PROJECT_ROOT / "04_pretraining" / "model.pth"
-    if not model_path.exists():
-        print(f"[WARNING] Generation model not found at {model_path}")
-        return
+    models_dir = str(PROJECT_ROOT / "05_finetuning" / "gpt2")
 
-    print(f"[INFO] Loading generation model from {model_path}...")
-    model = GPTModel(GPT_CONFIG_PRETRAINED)
-    state_dict = torch.load(str(model_path), map_location=DEVICE, weights_only=True)
-    model.load_state_dict(state_dict)
+    print("[INFO] Downloading/loading pretrained GPT-2 124M weights...")
+    settings, params = download_and_load_gpt2(model_size="124M", models_dir=models_dir)
+
+    model = GPTModel(GPT_CONFIG_CLASSIFIER)
+    load_weights_into_gpt(model, params)
     model.to(DEVICE)
     model.eval()
     gen_model = model
@@ -121,7 +109,7 @@ def generate(
 
     for _ in range(max_new_tokens):
         # Crop to context window
-        idx_cond = input_ids[:, -GPT_CONFIG_PRETRAINED["context_length"]:]
+        idx_cond = input_ids[:, -GPT_CONFIG_CLASSIFIER["context_length"]:]
 
         with torch.no_grad():
             logits = gen_model(idx_cond)
