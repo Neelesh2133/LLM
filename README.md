@@ -32,10 +32,15 @@ LLM/
 │   ├── Loading_a_model.md
 │   ├── 📊 Visualization_Pretraining.md
 │   └── gpt_code.py
-├── 📁 05_finetuning/                  # Classification fine-tuning & dataset balancing
+├── 📁 05_classification_finetuning/   # Classification fine-tuning & dataset balancing
 │   ├── Classification_Finetuning.ipynb
 │   ├── Classification_Finetuning.md
 │   └── 📊 Visualization_Finetuning.md
+├── 📁 ui/                            # Interactive Web UI & FastAPI backend
+│   ├── app.py
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
 ├── README.md                           # Project Overview & Setup Instructions
 └── requirements.txt                    # Project Dependencies
 ```
@@ -50,7 +55,7 @@ LLM/
 | **02. Attention Mechanism** | [Attention_Mechanism.ipynb](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.ipynb) | [Attention_Mechanism.md](file:///d:/projects/LLM/02_attention_mechanism/Attention_Mechanism.md) | [Visualization_Attention.md](file:///d:/projects/LLM/02_attention_mechanism/Visualization_Attention.md) | Dot-product self-attention, matrix multiplication, trainable QKV weights, scaling factor, and PyTorch modules. |
 | **03. GPT Model Architecture** | [GPT_Model.ipynb](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.ipynb) | [GPT_Model.md](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.md) | [Visualization_GPT_Architecture.md](file:///d:/projects/LLM/03_gpt_architecture/Visualization_GPT_Architecture.md) | Full GPT model class (`GPTModel`), Layer Normalization, multi-head attention blocks, and forward pass output shapes. |
 | **04. Model Pretraining** | [Pretraining_Model.ipynb](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.ipynb) | [Pretraining_Model.md](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.md) | [Visualization_Pretraining.md](file:///d:/projects/LLM/04_pretraining/Visualization_Pretraining.md) | Pretraining GPT on unlabeled text, cross-entropy loss, perplexity calculation, training loop, loss plotting, and loading saved weights. |
-| **05. Classification Finetuning** | [Classification_Finetuning.ipynb](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.ipynb) | [Classification_Finetuning.md](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.md) | [Visualization_Finetuning.md](file:///d:/projects/LLM/05_finetuning/Visualization_Finetuning.md) | Fine-tuning GPT for text classification, SMS spam collection dataset downloading, class balancing, and split creation. |
+| **05. Classification Finetuning** | [Classification_Finetuning.ipynb](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.ipynb) | [Classification_Finetuning.md](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.md) | [Visualization_Finetuning.md](file:///d:/projects/LLM/05_classification_finetuning/Visualization_Finetuning.md) | Fine-tuning GPT for text classification, SMS spam collection dataset downloading, class balancing, and split creation. |
 
 ---
 
@@ -79,7 +84,7 @@ Attention allows models to dynamically focus on relevant tokens across sequences
 - **Training Pipeline**: Batch loss computation (`calc_loss_batch`), data loader iteration (`calc_loss_loader`), and AdamW optimization loop (`train_model_simple`).
 - **Loss Plotting & Sampling**: Dual-axis plotting of training vs validation loss across epochs and tokens seen, alongside text sampling generation.
 
-### 5. Classification Finetuning ([05_finetuning/](file:///d:/projects/LLM/05_finetuning/))
+### 5. Classification Finetuning ([05_classification_finetuning/](file:///d:/projects/LLM/05_classification_finetuning/))
 - **Dataset Preparation**: Downloading and extracting the SMS Spam Collection dataset.
 - **Class Balancing**: Undersampling majority `ham` class to match `spam` instances (747 samples each).
 - **Dataset Splitting**: Train, validation, and test dataset creation using randomized shuffling.

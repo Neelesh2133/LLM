@@ -1,6 +1,6 @@
 # Classification Finetuning Data Preparation (`Classification_Finetuning.ipynb`)
 
-This document outlines the data preparation and downloading workflow used for **Classification Finetuning** in [`05_finetuning/Classification_Finetuning.ipynb`](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.ipynb).
+This document outlines the data preparation and downloading workflow used for **Classification Finetuning** in [`05_classification_finetuning/Classification_Finetuning.ipynb`](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.ipynb).
 
 
 

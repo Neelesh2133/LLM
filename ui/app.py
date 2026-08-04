@@ -17,8 +17,8 @@ from pydantic import BaseModel, Field
 # ---------------------------------------------------------------------------
 # Add project dirs to path so we can import the model definitions
 # ---------------------------------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(PROJECT_ROOT / "05_finetuning"))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "05_classification_finetuning"))
 sys.path.insert(0, str(PROJECT_ROOT / "03_gpt_architecture"))
 
 from models import (  # noqa: E402
@@ -56,7 +56,7 @@ models_loaded = {"generation": False, "classification": False}
 def load_generation_model():
     """Load OpenAI's pretrained GPT-2 124M weights for text generation."""
     global gen_model
-    models_dir = str(PROJECT_ROOT / "05_finetuning" / "gpt2")
+    models_dir = str(PROJECT_ROOT / "05_classification_finetuning" / "gpt2")
 
     print("[INFO] Downloading/loading pretrained GPT-2 124M weights...")
     settings, params = download_and_load_gpt2(model_size="124M", models_dir=models_dir)
@@ -73,7 +73,7 @@ def load_generation_model():
 def load_classification_model():
     """Load the fine-tuned GPT-2 spam classifier."""
     global cls_model
-    model_path = PROJECT_ROOT / "05_finetuning" / "text_classifier.pth"
+    model_path = PROJECT_ROOT / "05_classification_finetuning" / "text_classifier.pth"
     if not model_path.exists():
         print(f"[WARNING] Classification model not found at {model_path}")
         return
@@ -240,11 +240,11 @@ async def api_classify(req: ClassifyRequest):
 
 
 # Serve static files
-static_dir = PROJECT_ROOT / "static"
-if static_dir.exists():
-    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+UI_DIR = Path(__file__).resolve().parent
+if UI_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(UI_DIR)), name="static")
 
 
 @app.get("/")
 async def serve_ui():
-    return FileResponse(str(static_dir / "index.html"))
+    return FileResponse(str(UI_DIR / "index.html"))

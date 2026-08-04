@@ -38,6 +38,12 @@ ch07/04_preference-tuning-with-dpo/reward margins-plot.pdf
 
 # Checkpoint files
 model.pth
+*.pth
+*.ckpt
+*.ckpt.*
+*.bin
+*.safetensors
+gpt2/
 appendix-A/01_main-chapter-code/model.pth
 
 appendix-E/01_main-chapter-code/gpt2

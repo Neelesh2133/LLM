@@ -1,6 +1,6 @@
 # 📊 Step 05 — Classification Finetuning: Visual Workflow
 
-> **Companion visualization for** [`Classification_Finetuning.ipynb`](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.ipynb) **and** [`Classification_Finetuning.md`](file:///d:/projects/LLM/05_finetuning/Classification_Finetuning.md)
+> **Companion visualization for** [`Classification_Finetuning.ipynb`](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.ipynb) **and** [`Classification_Finetuning.md`](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.md)
 
 ---
 
