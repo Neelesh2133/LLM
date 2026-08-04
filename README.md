@@ -36,6 +36,9 @@ LLM/
 │   ├── Classification_Finetuning.ipynb
 │   ├── Classification_Finetuning.md
 │   └── 📊 Visualization_Finetuning.md
+├── 📁 06_instruction_finetuning/      # Instruction fine-tuning & dataset formatting
+│   ├── Instruction_Finetuning.md
+│   └── 📊 Visualization_Instruction_Finetuning.md
 ├── 📁 ui/                            # Interactive Web UI & FastAPI backend
 │   ├── app.py
 │   ├── index.html
@@ -56,6 +59,7 @@ LLM/
 | **03. GPT Model Architecture** | [GPT_Model.ipynb](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.ipynb) | [GPT_Model.md](file:///d:/projects/LLM/03_gpt_architecture/GPT_Model.md) | [Visualization_GPT_Architecture.md](file:///d:/projects/LLM/03_gpt_architecture/Visualization_GPT_Architecture.md) | Full GPT model class (`GPTModel`), Layer Normalization, multi-head attention blocks, and forward pass output shapes. |
 | **04. Model Pretraining** | [Pretraining_Model.ipynb](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.ipynb) | [Pretraining_Model.md](file:///d:/projects/LLM/04_pretraining/Pretraining_Model.md) | [Visualization_Pretraining.md](file:///d:/projects/LLM/04_pretraining/Visualization_Pretraining.md) | Pretraining GPT on unlabeled text, cross-entropy loss, perplexity calculation, training loop, loss plotting, and loading saved weights. |
 | **05. Classification Finetuning** | [Classification_Finetuning.ipynb](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.ipynb) | [Classification_Finetuning.md](file:///d:/projects/LLM/05_classification_finetuning/Classification_Finetuning.md) | [Visualization_Finetuning.md](file:///d:/projects/LLM/05_classification_finetuning/Visualization_Finetuning.md) | Fine-tuning GPT for text classification, SMS spam collection dataset downloading, class balancing, and split creation. |
+| **06. Instruction Finetuning** | `Instruction_Finetuning.ipynb` | [Instruction_Finetuning.md](file:///d:/projects/LLM/06_instruction_finetuning/Instruction_Finetuning.md) | [Visualization_Instruction_Finetuning.md](file:///d:/projects/LLM/06_instruction_finetuning/Visualization_Instruction_Finetuning.md) | Fine-tuning GPT to follow human instructions, prompt formatting, target token loss masking, and response generation evaluation. |
 
 ---
 
